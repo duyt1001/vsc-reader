@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "vsc-reader.helloWorld",
-        "title": "Hello World"
+        "command": "vsc-reader.readText",
+        "title": "Read Text"
       }
     ]
   },

@@ -16,10 +16,47 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('vsc-reader.readText', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from vsc-reader!');
+		vscode.window.showInformationMessage('Opening the webview for the current file!');
+
+		let editor = vscode.window.activeTextEditor;
+
+		if (!editor) {
+			vscode.window.showErrorMessage('No active editor found!');
+			return;
+		} else {
+			const panel = vscode.window.createWebviewPanel(
+				'vsc-reader', // Identifies the type of the webview. Used internally
+				'VSC Reader', // Title of the panel displayed to the user
+				vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+				{} // Webview options. More on these later.
+			);
+
+			panel.webview.html = getWebviewContent(editor.document.getText());
+		}
 	});
 
 	context.subscriptions.push(disposable);
+}
+
+function getWebviewContent(text: string) {
+	return `<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>VSC Reader</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f0f0f0;
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		${text}
+	</body>
+	</html>`;
 }
 
 // This method is called when your extension is deactivated
